@@ -7,7 +7,7 @@ from order.serializers import OrderSerializer
 
 class OrderSerializerTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="john", password="test123")
+        self.user = User.objects.create_user(username="Wagner", password="teste123")
 
         self.product1 = Product.objects.create(
             title="Dipirona",

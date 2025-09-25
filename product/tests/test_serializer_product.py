@@ -46,7 +46,7 @@ class ProductSerializerTest(TestCase):
             "category": [
                 {
                     "title": "Vitaminas",
-                    "slug": "vitaminas",
+                    "slug": "vitaminas2",
                     "description": "Suplementos alimentares",
                     "active": True
                 }

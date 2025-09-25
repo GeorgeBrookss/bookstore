@@ -33,4 +33,4 @@ class OrderModelTestCase(TestCase):
         self.assertIn(self.product2, self.order.product.all())
 
     def test_order_user(self):
-        self.assertEqual(self.order.user.username, "john")
+        self.assertEqual(self.order.user.username, "Wagner")
