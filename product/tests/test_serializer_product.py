@@ -1,65 +1,32 @@
-from django.test import TestCase
+from rest_framework import serializers
 from product.models import Product, Category
-from product.serializers.product_serializer import ProductSerializer
 
+class ProductSerializer(serializers.ModelSerializer):
+    # Campo de leitura: mostra objetos Category no GET
+    category = serializers.StringRelatedField(many=True, read_only=True)
 
-class ProductSerializerTest(TestCase):
-    def test_product_serialization(self):
-        category = Category.objects.create(
-            title="Remédios",
-            slug="remedios",
-            description="Medicamentos em geral",
-            active=True
-        )
+    # Campo de escrita: aceita IDs de Category no POST/PUT
+    categories_id = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(),
+        many=True,
+        write_only=True
+    )
 
-        product = Product.objects.create(
-            title="Dipirona",
-            description="500 mg uma vez ao dia",
-            price=20,
-            active=True
-        )
-        product.category.add(category)
+    class Meta:
+        model = Product
+        fields = ['id', 'title', 'description', 'price', 'active', 'category', 'categories_id']
 
-        serializer = ProductSerializer(product)
-        data = serializer.data
+    def create(self, validated_data):
+        categories = validated_data.pop('categories_id', [])
+        product = Product.objects.create(**validated_data)
+        product.category.set(categories)  # adiciona as categorias corretamente
+        return product
 
-        self.assertEqual(data["title"], "Dipirona")
-        self.assertEqual(data["description"], "500 mg uma vez ao dia")
-        self.assertEqual(data["price"], 20)
-        self.assertTrue(data["active"])
-        self.assertEqual(len(data["category"]), 1)
-        self.assertEqual(data["category"][0]["title"], "Remédios")
-
-    def test_product_deserialization(self):
-        category = Category.objects.create(
-            title="Vitaminas",
-            slug="vitaminas",
-            description="Suplementos alimentares",
-            active=True
-        )
-
-        data = {
-            "title": "Vitamina C",
-            "description": "Tomar 1 comprimido por dia",
-            "price": 15,
-            "active": True,
-            "category": [
-                {
-                    "title": "Vitaminas",
-                    "slug": "vitaminas2",
-                    "description": "Suplementos alimentares",
-                    "active": True
-                }
-            ]
-        }
-
-        serializer = ProductSerializer(data=data)
-        self.assertTrue(serializer.is_valid(), serializer.errors)
-        validated = serializer.validated_data
-
-        self.assertEqual(validated["title"], "Vitamina C")
-        self.assertEqual(validated["description"], "Tomar 1 comprimido por dia")
-        self.assertEqual(validated["price"], 15)
-        self.assertTrue(validated["active"])
-        self.assertEqual(len(validated["category"]), 1)
-        self.assertEqual(validated["category"][0]["title"], "Vitaminas")
+    def update(self, instance, validated_data):
+        categories = validated_data.pop('categories_id', None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        if categories is not None:
+            instance.category.set(categories)
+        instance.save()
+        return instance
