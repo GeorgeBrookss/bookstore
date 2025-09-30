@@ -1,29 +1,27 @@
 from rest_framework import serializers
-
+from product.serializers.product_serializer import ProductSerializer
 from product.models.product import Product
 from ..models.order import Order
-from product.serializers.product_serializer import ProductSerializer
 
 class OrderSerializer(serializers.ModelSerializer):
-    product = ProductSerializer(required=True, many=True, read_only=False)
-    products_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), write_only=True, many=True)
+    product = ProductSerializer(required=False, many=True, read_only=True)
+    products_id = serializers.PrimaryKeyRelatedField(
+        queryset=Product.objects.all(),
+        write_only=True,
+        many=True
+    )
     total = serializers.SerializerMethodField()
-    
+
     def get_total(self, instance):
-        total = sum([product.price for product in instance.product.all()])
-        return total
+        return sum([product.price for product in instance.product.all()])
 
     class Meta:
-        model = Order  
-        fields = ['product', 'total','user', 'products_id']
-        extra_kwargs = {'product': {'required': False}}
-        
+        model = Order
+        fields = ['product', 'total', 'products_id']
+
     def create(self, validated_data):
-        product_data = validated_data.pop('products_id')
-        user_data = validated_data.pop('user')
-        
-        order = Order.objects.create(user=user_data)
-        for product in product_data:
-            order.product.add(product)
-            
+        products_data = validated_data.pop('products_id')
+        user = self.context['request'].user  # pega usuário do token
+        order = Order.objects.create(user=user)
+        order.product.set(products_data)
         return order
