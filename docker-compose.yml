@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bookstore
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      SECRET_KEY: "django-insecure-69o)98tn6up#t#)qa(h&l!ln*$83w@9vb(64j9nj8l(ie!vh-u"
+      DEBUG: "1"
+      DJANGO_ALLOWED_HOSTS: "*"
+      SQL_ENGINE: "django.db.backends.postgresql"
+      SQL_DATABASE: "bookstore"
+      SQL_USER: "postgres"
+      SQL_PASSWORD: "postgres"
+      SQL_HOST: "db"
+      SQL_PORT: "5432"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres_data:
