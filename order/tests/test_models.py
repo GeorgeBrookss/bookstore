@@ -11,16 +11,10 @@ class OrderModelTestCase(TestCase):
 
         # Criar produtos
         self.product1 = Product.objects.create(
-            title="Dipirona",
-            description="500 mg",
-            price=20,
-            active=True
+            title="Dipirona", description="500 mg", price=20, active=True
         )
         self.product2 = Product.objects.create(
-            title="Paracetamol",
-            description="750 mg",
-            price=15,
-            active=True
+            title="Paracetamol", description="750 mg", price=15, active=True
         )
 
         # Criar pedido

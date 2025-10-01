@@ -9,7 +9,7 @@ class CategorySerializerTest(TestCase):
             title="Remédios",
             slug="remedios",
             description="Medicamentos em geral",
-            active=True
+            active=True,
         )
 
         serializer = CategorySerializer(category)
@@ -25,7 +25,7 @@ class CategorySerializerTest(TestCase):
             "title": "Cosméticos",
             "slug": "cosmeticos",
             "description": "Produtos de beleza",
-            "active": True
+            "active": True,
         }
 
         serializer = CategorySerializer(data=data)

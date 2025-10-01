@@ -1,29 +1,19 @@
-# Usar Python oficial
 FROM python:3.11-slim
 
-# Instalar dependências do sistema
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
+ENV PYTHONUNBUFFERED=1 \
+    POETRY_VIRTUALENVS_CREATE=false \
+    POETRY_NO_INTERACTION=1 \
+    DJANGO_ALLOWED_HOSTS=*
 
-# Instalar Poetry
-RUN pip install poetry==1.8.3
+RUN apt-get update && apt-get install -y build-essential libpq-dev gcc && apt-get clean
 
-# Criar diretório de trabalho
+RUN pip install --upgrade pip && pip install poetry==1.8.3
+
 WORKDIR /app
 
-# Copiar arquivos de configuração
 COPY pyproject.toml poetry.lock* ./
+RUN poetry install --no-interaction --no-ansi
 
-# Instalar dependências (sem --with dev)
-RUN poetry install --no-root
-
-# Copiar projeto
 COPY . .
 
-# Expor porta padrão do Django
-EXPOSE 8000
-
-# Comando para rodar o servidor
-CMD ["poetry", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

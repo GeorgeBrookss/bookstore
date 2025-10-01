@@ -9,14 +9,11 @@ class ProductTestCase(TestCase):
             title="Remédios",
             slug="remedios",
             description="Medicamentos em geral",
-            active=True
+            active=True,
         )
 
         product = Product.objects.create(
-            title="Dipirona",
-            description="500 mg uma vez ao dia",
-            price=20,
-            active=True
+            title="Dipirona", description="500 mg uma vez ao dia", price=20, active=True
         )
 
         product.category.add(category)
@@ -33,7 +30,7 @@ class ProductTestCase(TestCase):
             title="Remédios",
             slug="remedios",
             description="Medicamentos em geral",
-            active=True
+            active=True,
         )
 
         self.assertEqual(category.title, "Remédios")

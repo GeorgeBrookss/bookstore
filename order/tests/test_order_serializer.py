@@ -10,16 +10,10 @@ class OrderSerializerTestCase(TestCase):
         self.user = User.objects.create_user(username="Wagner", password="teste123")
 
         self.product1 = Product.objects.create(
-            title="Dipirona",
-            description="500 mg",
-            price=20,
-            active=True
+            title="Dipirona", description="500 mg", price=20, active=True
         )
         self.product2 = Product.objects.create(
-            title="Paracetamol",
-            description="750 mg",
-            price=15,
-            active=True
+            title="Paracetamol", description="750 mg", price=15, active=True
         )
 
         self.order = Order.objects.create(user=self.user)
