@@ -14,23 +14,22 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
-    
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
         
     - name: Install Poetry 1.1.14
-      run: |
-        curl -sSL https://install.python-poetry.org | python3 - --version 1.1.14
-        export PATH="$HOME/.local/bin:$PATH"
-        poetry --version
-        
-    - name: View poetry --help
-      run: poetry --help
+      uses: abatilo/actions-poetry@v2
+      with:
+        poetry-version: 1.1.14
+
+    - name: View poetry version
+      run: poetry --version
       
     - name: Install dependencies
-      run: poetry install
+      run: poetry install --no-root
       
     - name: Run tests
       run: poetry run python manage.py test
