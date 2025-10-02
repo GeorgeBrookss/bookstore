@@ -11,6 +11,8 @@ class ProductFactory(factory.django.DjangoModelFactory):
     price = factory.Faker('pydecimal', left_digits=3, right_digits=2, positive=True)
     active = True
 
+
+
     @factory.post_generation
     def category(self, create, extracted, **kwargs):
     
