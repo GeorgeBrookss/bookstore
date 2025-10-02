@@ -9,7 +9,6 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [3.8, 3.9]
-        poetry-version: [1.1.4]
     
     runs-on: ubuntu-latest
     
@@ -21,9 +20,10 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         
-    - name: Install Poetry
+    - name: Install Poetry 1.1.14
       run: |
-        curl -sSL https://install.python-poetry.org | python3 -
+        curl -sSL https://install.python-poetry.org | python3 - --version 1.1.14
+        export PATH="$HOME/.local/bin:$PATH"
         poetry --version
         
     - name: View poetry --help
@@ -32,6 +32,5 @@ jobs:
     - name: Install dependencies
       run: poetry install
       
-    - name: Test
-      run: |
-        poetry run python manage.py test
+    - name: Run tests
+      run: poetry run python manage.py test
