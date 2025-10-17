@@ -15,11 +15,9 @@ dependencies = [
     "django-extensions (>=3.2.3,<4.0.0)",
     "psycopg2-binary (>=2.9.9,<3.0.0)",
 
-    # testes
     "pytest (>=8.4.2,<9.0.0)",
     "factory-boy (>=3.3.3,<4.0.0)",
 
-    # ferramentas extras (opcional mas geralmente pedidas pelo professor)
     "coverage (>=7.6.0,<8.0.0)",
     "black (>=24.3.0,<25.0.0)",
     "flake8 (>=7.1.0,<8.0.0)"
