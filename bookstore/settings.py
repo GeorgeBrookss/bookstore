@@ -96,8 +96,8 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = "static/"
+STATIC_URL = '/static/'
 import os
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = '/home/GMarceloB/bookstore/staticfiles'
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
