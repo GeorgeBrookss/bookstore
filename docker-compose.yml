@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bookstore
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bookstore"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports: 
+      - "5432:5432"
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    environment:
+      SECRET_KEY: "django-insecure-69o)98tn6up#t#)qa(h&l!ln*$83w@9vb(64j9nj8l(ie!vh-u"
+      DEBUG: "1"
+      DJANGO_ALLOWED_HOSTS: "*"
+      SQL_ENGINE: "django.db.backends.postgresql"
+      SQL_DATABASE: "bookstore"
+      SQL_USER: "postgres"
+      SQL_PASSWORD: "postgres"
+      SQL_HOST: "db"
+      SQL_PORT: "5432"
+    ports:
+      - "8000:8000"
+    env_file:
+    - ./env.dev
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - app_data:/usr/src/app/
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  app_data:
